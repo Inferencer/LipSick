@@ -1,9 +1,10 @@
 ![LipSick Logo](/utils/logo/LipSick.png)
 
-## Installation Instructions
+## Introduction
 
-### To get started with LipSick on Windows, follow these steps to set up your environment. This branch has been tested with Anaconda using Python 3.10 and CUDA 11.6.
-
+#### To get started with LipSick on Windows, follow these steps to set up your environment. This branch has been tested with Anaconda using Python 3.10 and CUDA 11.6.
+<details>
+  <summary>Install</summary>
 
 1. Clone the repository:
 ```python
@@ -15,7 +16,12 @@ cd LipSick
 conda env create -f environment.yml
 conda activate lipsick
 ```
-## Download
+</details>
+
+## Download pre-trained models
+<details>
+  <summary>Download Links</summary>
+
 ### For the folder ./asserts
 
 Please download pretrained_lipsick.pth using this [link](https://github.com/Inferencer/LipSick/releases/download/v1pretrained_lipsick.pth/pretrained_lipsick.pth) and place the file in the folder ./asserts
@@ -25,8 +31,9 @@ Then, download output_graph.pb using this [link](https://github.com/Inferencer/L
 ### For the folder ./models
 
 Please download shape_predictor_68_face_landmarks.dat using this [link](https://github.com/Inferencer/LipSick/releases/download/v1PretrainedModels/shape_predictor_68_face_landmarks.dat) and place the file in the folder ./models
+</details>
 
-### The folder structure for manually donwloaded models
+### The folder structure for manually downloaded models
 ```python
 .
 ├── ...
