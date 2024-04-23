@@ -65,27 +65,38 @@ Changelog
 
 ### To-Do List
 
-- [ ] Add support for Linux and MacOS.
-- [ ] Integrate with Hugging Face and Google Colab.
-- [ ] Add upscale reference frames with masking.
-- [ ] Add seamless clone masking to remove the common bounding box around mouths.
-- [ ] Add custom reference frame feature.
-- [ ] Add auto persistent crop_radius to prevent mask flickering.
+- [ ] Add support MacOS.
+- [ ] Add upscale reference frames with masking. 
+- [ ] Add seamless clone masking to remove the common bounding box around mouths. 🤕
+- [ ] Add alternative option for face tracking model [SFD](https://github.com/1adrianb/face-alignment) (likely best results, but slower than Dlib).
+- [ ] Add custom reference frame feature. 😷
+- [ ] Add auto persistent crop_radius to prevent mask flickering. 😷
 - [ ] Examine CPU speed upgrades.
-- [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos.
-- [ ] Provide HuggingFace space CPU (free usage but slower).
-- [ ] Provide Google Colab .IPYNB.
-- [ ] Provide HuggingFace space GPU.
-- [ ] Release Tutorial on manual masking using DaVinci.
-- [ ] Looped original video generated as an option for faster manual masking.
+- [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
+- [ ] Provide HuggingFace space CPU (free usage but slower). 😷
+- [ ] Provide Google Colab .IPYNB. 😷
+- [ ] Provide HuggingFace space GPU. 😷
+- [ ] Add support for Linux. 🤢
+- [ ] Release Tutorial on manual masking using DaVinci. 😷
+- [ ] Looped original video generated as an option for faster manual masking. 😷
 - [ ] Image to MP4 conversion so a single image can be used as input.
 - [ ] Automatic audio conversion to WAV regardless of input audio format.
-- [x] Moved frame extraction to temp folders.
-- [x] Results with the same input video name no longer overwrite existing results.
-- [x] Remove OpenFace CSV requirement.
-- [x] Detect accepted media input formats only.
-- [x] Upgrade to Python 3.10.
-- [x] Add UI.
+- [x] Moved frame extraction to temp folders. 🤮
+- [x] Results with the same input video name no longer overwrite existing results. 🤮
+- [x] Remove OpenFace CSV requirement. 🤮
+- [x] Detect accepted media input formats only. 🤮
+- [x] Upgrade to Python 3.10. 🤮
+- [x] Add UI. 🤮
+
+### Key:
+- 🤮 = Completed & published
+- 🤢 = Completed & published but requires community testing
+- 😷 = Tested & working but not published yet
+- 🤕 = Tested but not ready for public use
+### Simple Key:
+- [x] Available
+- [ ] Unavailable
+
 
 
 ## Acknowledge
