@@ -56,11 +56,6 @@ Changelog
 
 
 
-
- Add support for Linux and MacOS.
- Integrate with Hugging Face and Google Colab.
- Optimize model performance for different hardware setups.
-
 ### To-Do List
 
 - [ ] Add support for Linux and MacOS.
