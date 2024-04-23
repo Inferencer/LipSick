@@ -2,7 +2,7 @@
 
 ## Introduction
 
-#### To get started with LipSick on Windows, follow these steps to set up your environment. This branch has been tested with Anaconda using Python 3.10 and CUDA 11.6.
+#### To get started with LipSick on Windows, follow these steps to set up your environment. This branch has been tested with Anaconda using Python 3.10 and CUDA 11.6 with only 4GB VRAM.
 <details>
   <summary>Install</summary>
 
