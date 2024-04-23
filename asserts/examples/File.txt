@@ -1,0 +1,1 @@
+This text document was created so GitHub would accept an empty folder so you have the correct folder structure
