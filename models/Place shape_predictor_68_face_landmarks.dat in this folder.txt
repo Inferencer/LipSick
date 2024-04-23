@@ -1,0 +1,3 @@
+Please download shape_predictor_68_face_landmarks.dat using this link 
+https://github.com/Inferencer/LipSick/releases/download/v1PretrainedModels/shape_predictor_68_face_landmarks.dat
+and place the file in this folder.
