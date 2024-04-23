@@ -1,4 +1,4 @@
-![LipSick Logo](/utils/logo/LipSick.png)
+![LipSick Logo](/utils/logo/LipSick_bg.jpg)
 
 ## Introduction
 
