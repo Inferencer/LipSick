@@ -81,6 +81,8 @@ Changelog
 - [ ] Looped original video generated as an option for faster manual masking. 😷
 - [ ] Image to MP4 conversion so a single image can be used as input.
 - [ ] Automatic audio conversion to WAV regardless of input audio format.
+- [ ] Clean README.md & provide command line inference
+- [x] Remove warning messages in command prompt that don't affect performance 🤢
 - [x] Moved frame extraction to temp folders. 🤮
 - [x] Results with the same input video name no longer overwrite existing results. 🤮
 - [x] Remove OpenFace CSV requirement. 🤮
