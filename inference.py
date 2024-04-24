@@ -194,7 +194,7 @@ if __name__ == '__main__':
     video_add_audio_path = get_versioned_filename(video_add_audio_path)  # Ensures unique filenames
     if os.path.exists(video_add_audio_path):
         os.remove(video_add_audio_path)
-    cmd = f'ffmpeg -i {res_video_path} -i {opt.driving_audio_path} -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 {video_add_audio_path}'
+    cmd = f'ffmpeg -i "{res_video_path}" -i "{opt.driving_audio_path}" -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 "{video_add_audio_path}"'
     subprocess.call(cmd, shell=True)
     os.remove(res_video_path)  # Clean up intermediate files
     os.remove(res_face_path)  # Clean up intermediate files
