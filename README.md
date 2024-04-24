@@ -87,6 +87,9 @@ Changelog
 - [ ] Automatic audio conversion to WAV regardless of input audio format.
 - [ ] Clean README.md & provide command line inference.
 - [ ] Remove input video 25fps requirement.
+- [ ] Upload cherry picked input footage for user download & use.
+- [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
+- [ ] Upload results footage montage to GitHub so new users can see what LipSick is capable of.
 - [x] Remove warning messages in command prompt that don't affect performance. 🤢
 - [x] Moved frame extraction to temp folders. 🤮
 - [x] Results with the same input video name no longer overwrite existing results. 🤮
