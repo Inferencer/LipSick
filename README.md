@@ -8,11 +8,33 @@ sdk_version: 4.26.0
 app_file: app.py
 pinned: false
 ---
-I will link to my space when completed so you can just duplicate the space and select the paid hardware Nvidia T4 small is 
+you can just duplicate the [space](https://huggingface.co/spaces/Inferencer/LipSick) and select the paid hardware Nvidia T4 small is 
 the smallest GPU HuggingFace offers which is $0.40/hour charging each minute of uptime regardless of GPU usage unless you pause the space.
 
 I will also upload a HuggingFace CPU branch that will be free but is much slower 🤮
-![LipSick Logo](/utils/logo/HuggingFacePrices.jpg)
+
+## How to Setup
+<details>
+<summary>Click to expand!</summary>
+
+### Important! 
+Set your space to private, or users will keep restarting your sleeping space and you will be charged.
+
+#### Step 1: Duplicate the Space
+Select the 3 dots on the top right of the space then click "Duplicate Space" from the dropdown.
+![LipSick Logo](/utils/InstallHelp/Step1.jpg)
+
+#### Step 2: Select Your Hardware
+I recommend the cheapest GPU, which is NVIDIA T4 small.
+![LipSick Logo](/utils/InstallHelp/Step2.jpg)
+
+#### Step 3: Select the Sleep Time
+Select the sleep time which will stop you from being charged after a period of inactivity.
+![LipSick Logo](/utils/InstallHelp/Step3.jpg)
+
+</details>
+
+
 ![LipSick Logo](/utils/logo/LipSick_bg.jpg)
 
 ### To-Do List
