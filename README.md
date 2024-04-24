@@ -78,7 +78,6 @@ Changelog
 - [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
 - [ ] Provide HuggingFace space CPU (free usage but slower). 😷
 - [ ] Provide Google Colab .IPYNB. 😷
-- [ ] Provide HuggingFace space GPU. 😷
 - [ ] Add support for Linux. 🤢
 - [ ] Release Tutorial on manual masking using DaVinci. 😷
 - [ ] Looped original video generated as an option for faster manual masking. 😷
@@ -89,6 +88,7 @@ Changelog
 - [ ] Upload cherry picked input footage for user download & use.
 - [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
 - [ ] Upload results footage montage to GitHub so new users can see what LipSick is capable of.
+- [x] Provide HuggingFace space GPU. 🤮
 - [x] Remove warning messages in command prompt that don't affect performance. 🤢
 - [x] Moved frame extraction to temp folders. 🤮
 - [x] Results with the same input video name no longer overwrite existing results. 🤮
