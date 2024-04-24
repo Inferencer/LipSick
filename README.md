@@ -3,6 +3,9 @@
 ## Introduction
 
 #### To get started with LipSick on Linux, follow these steps to set up your environment. This branch has been tested with HuggingFace spaces which runs Linux using Python 3.10 and CUDA 12.3.2.
+
+## Setup
+
 <details>
   <summary>Install</summary>
 
