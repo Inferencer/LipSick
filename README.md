@@ -11,7 +11,7 @@
 
 1. Clone the repository:
 ```python
-git clone https://github.com/Inferencer/LipSick.git
+git clone -b linux https://github.com/Inferencer/LipSick.git
 cd LipSick
 ```
 2. Create and activate the Anaconda environment:
