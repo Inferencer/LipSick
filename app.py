@@ -47,12 +47,11 @@ iface = gr.Interface(
     fn=process_files,
     inputs=[
         gr.File(label="Upload MP4 File", type="filepath", file_types=["mp4"]),
-        gr.File(label="Upload WAV File", type="filepath", file_types=["wav"])
+        gr.File(label="Upload Audio File", type="filepath", file_types=["mp3", "wav", "acc", "wma", "flac", "m4a"])  # 'm4a' for ALAC files
     ],
-    outputs=gr.components.Video(label="Processed Video", show_label=False),  # Video component for playback
+    outputs=gr.components.Video(label="Processed Video", show_label=False),
     title="🤢 LIPSICK 🤮",
     description="Upload your video and driving audio to Lipsync.",
-    allow_flagging="never"  # Disable flagging
+    allow_flagging="never"
 )
-
 iface.launch()
