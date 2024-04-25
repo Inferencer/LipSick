@@ -12,4 +12,5 @@ tqdm
 tensorflow-gpu==2.10.0
 scipy
 protobuf
-dlib @ https://github.com/Inferencer/Dlib-Linux-Wheel-Python310/releases/download/v1.0/dlib-19.24.99-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+cmake
+dlib
