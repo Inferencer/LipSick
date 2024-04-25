@@ -1,7 +1,8 @@
 <div align="center">
     <h1>🤢 LipSick Collab 🤮</h1> 
-    <h1><a href="wiki/Windows-Installation">Google Collab Link</a></h1>
+    <h1><a href="https://colab.research.google.com/drive/172-G93PTzioP67DoltOliMOn5vnBSeRW?usp=sharing">Google Collab Link</a></h1>
 </div>
+
 
 ### To-Do List
 
