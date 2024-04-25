@@ -79,11 +79,11 @@ Changelog
 - [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
 - [ ] Provide HuggingFace space CPU (free usage but slower). 😷
 - [ ] Provide Google Colab .IPYNB. 😷
-- [ ] Add support for Linux. 🤢
+- [x] Add support for Linux. 🤢
 - [ ] Release Tutorial on manual masking using DaVinci. 😷
 - [ ] Looped original video generated as an option for faster manual masking. 😷
 - [ ] Image to MP4 conversion so a single image can be used as input.
-- [ ] Automatic audio conversion to WAV regardless of input audio format.
+- [x] Automatic audio conversion to WAV regardless of input audio format.
 - [ ] Clean README.md & provide command line inference.
 - [ ] Remove input video 25fps requirement.
 - [ ] Upload cherry picked input footage for user download & use.
