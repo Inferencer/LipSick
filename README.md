@@ -3,7 +3,7 @@
 ## Introduction
 
 #### To get started with LipSick on Windows, follow these steps to set up your environment. This branch has been tested with Anaconda using Python 3.10 and CUDA 11.6 with only 4GB VRAM.
-See branches for [Linux](https://github.com/Inferencer/LipSick/tree/linux) or HuggingFace [GPU](https://github.com/Inferencer/LipSick/tree/HuggingFace-GPU) / [CPU](https://github.com/Inferencer/LipSick/tree/HuggingFace-CPU) or Collab (soon)
+See branches for [Linux](https://github.com/Inferencer/LipSick/tree/linux) or HuggingFace [GPU](https://github.com/Inferencer/LipSick/tree/HuggingFace-GPU) / [CPU](https://github.com/Inferencer/LipSick/tree/HuggingFace-CPU) or [Collab](https://github.com/Inferencer/LipSick/tree/Google-Collab)
 
 ## Setup
 
