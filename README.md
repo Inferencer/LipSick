@@ -11,12 +11,12 @@ See branches for [Linux](https://github.com/Inferencer/LipSick/tree/linux) or Hu
   <summary>Install</summary>
 
 1. Clone the repository:
-```python
+```bash
 git clone https://github.com/Inferencer/LipSick.git
 cd LipSick
 ```
 2. Create and activate the Anaconda environment:
-```python
+```bash
 conda env create -f environment.yml
 conda activate LipSick
 ```
@@ -38,7 +38,7 @@ Please download shape_predictor_68_face_landmarks.dat using this [link](https://
 </details>
 
 ### The folder structure for manually downloaded models
-```python
+```bash
 .
 ├── ...
 ├── asserts                        
@@ -56,7 +56,7 @@ Please download shape_predictor_68_face_landmarks.dat using this [link](https://
 └── ...
 ```
 4. Run the application:
-```python
+```bash
 python app.py
 ```
 
