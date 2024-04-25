@@ -18,7 +18,7 @@ cd LipSick
 2. Create and activate the Anaconda environment:
 ```python
 conda env create -f environment.yml
-conda activate lipsick
+conda activate LipSick
 ```
 </details>
 
@@ -28,7 +28,7 @@ conda activate lipsick
 
 ### For the folder ./asserts
 
-Please download pretrained_lipsick.pth using this [link](https://github.com/Inferencer/LipSick/releases/download/v1pretrained_lipsick.pth/pretrained_lipsick.pth) and place the file in the folder ./asserts
+Please download pretrained_lipsick.pth using this [link](https://github.com/Inferencer/LipSick/releases/download/v1PretrainedModels/pretrained_lipsick.pth) and place the file in the folder ./asserts
 
 Then, download output_graph.pb using this [link](https://github.com/Inferencer/LipSick/releases/download/v1PretrainedModels/output_graph.pb) and place the file in the same folder.
 
