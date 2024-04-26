@@ -78,7 +78,7 @@ Changelog
 - [ ] Examine CPU speed upgrades.
 - [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
 - [ ] Provide HuggingFace space CPU (free usage but slower). 😷
-- [ ] Provide Google Colab .IPYNB. 😷
+- [x] Provide Google Colab .IPYNB. 🤮
 - [x] Add support for Linux. 🤢
 - [ ] Release Tutorial on manual masking using DaVinci. 😷
 - [ ] Looped original video generated as an option for faster manual masking. 😷
