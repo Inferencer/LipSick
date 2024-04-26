@@ -10,14 +10,14 @@
   <summary>Install</summary>
 
 1. Clone the repository:
-```python
+```bash
 git clone -b linux https://github.com/Inferencer/LipSick.git
 cd LipSick
 ```
 2. Create and activate the Anaconda environment:
-```python
+```bash
 conda env create -f environment.yml
-conda activate lipsick
+conda activate LipSick
 ```
 </details>
 
@@ -37,7 +37,7 @@ Please download shape_predictor_68_face_landmarks.dat using this [link](https://
 </details>
 
 ### The folder structure for manually downloaded models
-```python
+```bash
 .
 ├── ...
 ├── asserts                        
@@ -55,7 +55,7 @@ Please download shape_predictor_68_face_landmarks.dat using this [link](https://
 └── ...
 ```
 4. Run the application:
-```python
+```bash
 python app.py
 ```
 
@@ -77,12 +77,12 @@ Changelog
 - [ ] Examine CPU speed upgrades.
 - [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
 - [ ] Provide HuggingFace space CPU (free usage but slower). 😷
-- [ ] Provide Google Colab .IPYNB. 😷
-- [ ] Add support for Linux. 🤢
+- [x] Provide Google Colab .IPYNB. 🤮
+- [x] Add support for Linux. 🤢
 - [ ] Release Tutorial on manual masking using DaVinci. 😷
 - [ ] Looped original video generated as an option for faster manual masking. 😷
 - [ ] Image to MP4 conversion so a single image can be used as input.
-- [ ] Automatic audio conversion to WAV regardless of input audio format.
+- [x] Automatic audio conversion to WAV regardless of input audio format. 🤮
 - [ ] Clean README.md & provide command line inference.
 - [ ] Remove input video 25fps requirement.
 - [ ] Upload cherry picked input footage for user download & use.
