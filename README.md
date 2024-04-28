@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>🤢 LipSick Collab 🤮</h1> 
+    <h1>🤢 LipSick Collab - currently not working as I didnt add anytihng to auto download the models from the repo 🤮</h1> 
     <h1><a href="https://colab.research.google.com/drive/172-G93PTzioP67DoltOliMOn5vnBSeRW?usp=sharing">Google Collab Link</a></h1>
 </div>
 
