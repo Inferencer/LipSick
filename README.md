@@ -8,6 +8,8 @@ sdk_version: 4.26.0
 app_file: app.py
 pinned: false
 ---
+Currently only accepting .wav seems there is an error in the audio conversion on HF, dlib is also struggling with glasses
+
 you can just duplicate the [space](https://huggingface.co/spaces/Inferencer/LipSick) and select the paid hardware Nvidia T4 small is 
 the smallest GPU HuggingFace offers which is $0.40/hour charging each minute of uptime regardless of GPU usage unless you pause the space.
 
