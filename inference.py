@@ -30,11 +30,18 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 face_detector = dlib.get_frontal_face_detector()
 landmark_predictor = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
 
+def convert_audio_to_wav(audio_path):
+    # Check if the audio is already a WAV file
+    output_path = os.path.splitext(audio_path)[0] + '.wav'
+    if not audio_path.lower().endswith('.wav'):
+        # Use ffmpeg to convert the audio to the required format
+        command = f'ffmpeg -i "{audio_path}" -acodec pcm_s16le -ar 16000 -ac 1 "{output_path}"'
+        subprocess.run(command, shell=True, check=True)
+    return output_path
+
 def extract_frames_from_video(video_path, save_dir):
     videoCapture = cv2.VideoCapture(video_path)
     fps = videoCapture.get(cv2.CAP_PROP_FPS)
-    if int(fps) != 25:
-        print('warning: the input video is not 25 fps, it would be better to trans it to 25 fps!')
     frames = videoCapture.get(cv2.CAP_PROP_FRAME_COUNT)
     frame_height = videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT)
     frame_width = videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -65,8 +72,14 @@ def get_versioned_filename(filepath):
 
 if __name__ == '__main__':
     opt = LipSickInferenceOptions().parse_args()
+
+    # Convert the driving audio to WAV format if necessary
+    opt.driving_audio_path = convert_audio_to_wav(opt.driving_audio_path)
+
     if not os.path.exists(opt.source_video_path):
         raise Exception(f'wrong video path : {opt.source_video_path}')
+    if not os.path.exists(opt.deepspeech_model_path):
+        raise Exception('Please download the pretrained model of deepspeech')
 
     print(f'extracting frames from video: {opt.source_video_path}')
     video_frame_dir = opt.source_video_path.replace('.mp4', '')
@@ -74,13 +87,7 @@ if __name__ == '__main__':
         os.mkdir(video_frame_dir)
     video_size = extract_frames_from_video(opt.source_video_path, video_frame_dir)
 
-    print(f'extracting deepspeech feature from : {opt.driving_audio_path}')
-    if not os.path.exists(opt.deepspeech_model_path):
-        raise Exception('Please download the pretrained model of deepspeech')
-
     DSModel = DeepSpeech(opt.deepspeech_model_path)
-    if not os.path.exists(opt.driving_audio_path):
-        raise Exception(f'wrong audio path :{opt.driving_audio_path}')
     ds_feature = DSModel.compute_audio_feature(opt.driving_audio_path)
     res_frame_length = ds_feature.shape[0]
     ds_feature_padding = np.pad(ds_feature, ((2, 2), (0, 0)), mode='edge')
@@ -194,10 +201,11 @@ if __name__ == '__main__':
     video_add_audio_path = get_versioned_filename(video_add_audio_path)  # Ensures unique filenames
     if os.path.exists(video_add_audio_path):
         os.remove(video_add_audio_path)
-    cmd = f'ffmpeg -i {res_video_path} -i {opt.driving_audio_path} -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 {video_add_audio_path}'
+    cmd = f'ffmpeg -i "{res_video_path}" -i "{opt.driving_audio_path}" -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 "{video_add_audio_path}"'
     subprocess.call(cmd, shell=True)
     os.remove(res_video_path)  # Clean up intermediate files
     os.remove(res_face_path)  # Clean up intermediate files
+
 
 # Helper function to ensure unique filenames
 def get_versioned_filename(filepath):
