@@ -54,5 +54,4 @@ iface = gr.Interface(
     description="Upload your video and driving audio to Lipsync.",
     allow_flagging="never"  # Disable flagging
 )
-
 iface.launch()
