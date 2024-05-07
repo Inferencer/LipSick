@@ -109,9 +109,6 @@ if __name__ == '__main__':
     ref_img_list = []
     resize_w = int(opt.mouth_region_size + opt.mouth_region_size // 4)
     resize_h = int((opt.mouth_region_size // 2) * 3 + opt.mouth_region_size // 8)
-
-    # Print out the dimensions
-    print(f"Calculated resize_w: {resize_w}, resize_h: {resize_h}")
     
     ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
     for ref_index in ref_index_list:
@@ -150,7 +147,6 @@ if __name__ == '__main__':
         if not crop_flag:
             raise Exception('Our method can not handle videos with large change of facial size!!')
         crop_radius_1_4 = crop_radius_current // 4
-        print(f"Frame {clip_end_index}: crop_radius = {crop_radius_current}, crop_radius_1_4 = {crop_radius_1_4}")
         frame_data = cv2.imread(res_video_frame_path_list_pad[clip_end_index - 3])[:, :, ::-1]
         frame_landmark = res_video_landmark_data_pad[clip_end_index - 3, :, :]
         crop_frame_data = frame_data[
