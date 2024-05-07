@@ -13,8 +13,8 @@ dependencies:
   - numpy
   - scipy
   - protobuf
-  - opencv
   - pip:
+    - opencv-python
     - resampy
     - python_speech_features
     - filetype==1.2.0
