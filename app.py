@@ -77,4 +77,4 @@ with gr.Blocks() as iface:
             outputs=[stats_output, lowest, highest, average, most_common]
         )
         
-iface.launch()
+iface.launch(inbrowser=True)
