@@ -1,4 +1,5 @@
-![LipSick Logo](/utils/logo/LipSick_bg.jpg)
+
+[![Watch the video](/utils/logo/LipSick_bg.jpg)](https://youtu.be/ZO2AaXXwMrw)
 
 ## Introduction
 
