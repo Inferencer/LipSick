@@ -92,7 +92,7 @@ Changelog
 - [ ] Close mouth fully on silence
 - [x] Auto run the UI with a .bat file 🤮
 - [x] Auto open UI in default browser 🤮
-- [x] Add custom crop radius feature to stop flickering 🤮
+- [x] Add custom crop radius feature to stop flickering [Example](https://github.com/Inferencer/LipSick/issues/8#issuecomment-2099371266) 🤮
 - [x] Provide HuggingFace space GPU. 🤮
 - [x] Remove warning messages in command prompt that don't affect performance. 🤢
 - [x] Moved frame extraction to temp folders. 🤮
