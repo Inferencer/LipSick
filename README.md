@@ -90,6 +90,8 @@ Changelog
 - [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
 - [ ] Upload results footage montage to GitHub so new users can see what LipSick is capable of.
 - [ ] Close mouth fully on silence
+- [x] Auto run the UI with a .bat file 🤮
+- [x] Auto open UI in default browser 🤮
 - [x] Add custom crop radius feature to stop flickering 🤮
 - [x] Provide HuggingFace space GPU. 🤮
 - [x] Remove warning messages in command prompt that don't affect performance. 🤢
