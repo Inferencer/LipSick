@@ -89,6 +89,8 @@ Changelog
 - [ ] Upload cherry picked input footage for user download & use.
 - [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
 - [ ] Upload results footage montage to GitHub so new users can see what LipSick is capable of.
+- [ ] Close mouth fully on silence
+- [x] Add custom crop radius feature to stop flickering 🤮
 - [x] Provide HuggingFace space GPU. 🤮
 - [x] Remove warning messages in command prompt that don't affect performance. 🤢
 - [x] Moved frame extraction to temp folders. 🤮
