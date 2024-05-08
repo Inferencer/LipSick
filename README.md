@@ -63,10 +63,11 @@ Please download shape_predictor_68_face_landmarks.dat using this [link](https://
 ```bash
 python app.py
 ```
+Or use the new autorun tool by double clicking run_lipsick.bat
 
 
 This will launch a Gradio interface where you can upload your video and audio files to process them with LipSick.
-Changelog
+
 
 
 
