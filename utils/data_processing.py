@@ -29,7 +29,7 @@ def compute_crop_radius(video_size, landmark_data_clip, random_scale=None):
     video_w, video_h = video_size[0], video_size[1]
     landmark_max_clip = np.max(landmark_data_clip, axis=1)
     if random_scale is None:
-        random_scale = 1.0  # Set a fixed scaling factor instead of a random one
+        random_scale = 1.1  # Set a fixed scaling factor instead of a random one
 
     radius_h = (landmark_max_clip[:, 1] - landmark_data_clip[:, 29, 1]) * random_scale
     radius_w = (landmark_data_clip[:, 54, 0] - landmark_data_clip[:, 48, 0]) * random_scale
