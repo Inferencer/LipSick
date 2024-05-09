@@ -85,7 +85,7 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [x] Provide Google Colab .IPYNB. 🤮
 - [x] Add support for Linux. 🤢
 - [ ] Release Tutorial on manual masking using DaVinci. 😷
-- [ ] Looped original video generated as an option for faster manual masking. 😷
+- [x] Looped original video generated as an option for faster manual masking. 🤮
 - [ ] Image to MP4 conversion so a single image can be used as input.
 - [x] Automatic audio conversion to WAV regardless of input audio format. 🤢
 - [ ] Clean README.md & provide command line inference.
@@ -94,6 +94,7 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
 - [x] Upload results footage montage to GitHub so new users can see what LipSick is capable of. 🤮
 - [ ] Close mouth fully on silence
+- [x] auto git pull updater .bat file 🤢
 - [x] Add auto persistent crop_radius to prevent mask flickering. 🤮
 - [x] Auto run the UI with a .bat file. 🤮
 - [x] Auto open UI in default browser. 🤮
