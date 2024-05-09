@@ -4,10 +4,8 @@ import numpy as np
 import dlib
 from utils.data_processing import compute_crop_radius
 
-
 face_detector = dlib.get_frontal_face_detector()
 landmark_predictor = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
-
 
 def extract_frames_from_video(video_path):
     videoCapture = cv2.VideoCapture(video_path)
@@ -18,7 +16,6 @@ def extract_frames_from_video(video_path):
         frame_list.append(frame)
     return frame_list
 
-
 def load_landmarks(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_detector(gray)
@@ -28,20 +25,15 @@ def load_landmarks(frame):
     landmarks = np.array([[p.x, p.y] for p in shape.parts()])
     return landmarks
 
-
 def calculate_crop_radius_statistics(video_path):
     frames = extract_frames_from_video(video_path)
     landmark_data = [load_landmarks(frame) for frame in frames]
 
     crop_radii = []
     for i in range(len(landmark_data) - 5):
-        # Clip the required landmark data
         landmark_data_clip = np.array(landmark_data[i:i+5])
-
-        # Ensure the shape is correct (5, 68, 2)
         if landmark_data_clip.shape != (5, 68, 2):
             continue
-
         crop_flag, crop_radius = compute_crop_radius(frames[0].shape[:2], landmark_data_clip)
         if crop_flag:
             crop_radii.append(crop_radius)
@@ -53,5 +45,12 @@ def calculate_crop_radius_statistics(video_path):
     highest = max(crop_radii)
     average = int(np.mean(crop_radii))
     most_common = int(np.median(crop_radii))
+
+    # Printing detailed statistics
+    print("────────────────────────────────────────────")
+    print("Computing Crop Radius Statistics...")
+    print("────────────────────────────────────────────")
+    print(f"Done! \nLowest Crop Radius = {lowest}\nHighest Crop Radius = {highest}\nAverage Crop Radius = {average}\nMost Common Crop Radius = {most_common}")
+    print("────────────────────────────────────────────")
 
     return lowest, highest, average, most_common
