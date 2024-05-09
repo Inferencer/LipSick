@@ -45,13 +45,15 @@ class LipSickInferenceOptions:
         self.parser.add_argument("--source_video_path", type=str, required=True, help="Path to the source video")
         self.parser.add_argument("--source_openface_landmark_path", type=str, default=None, help="Path to the OpenFace landmarks file")
         self.parser.add_argument("--driving_audio_path", type=str, required=True, help="Path to the driving audio file")
-        self.parser.add_argument("--pretrained_lipsick_path", type=str, required=True, help="Path to the pretrained LipSick model")
-        self.parser.add_argument("--deepspeech_model_path", type=str, required=True, help="Path to the DeepSpeech model")
-        self.parser.add_argument("--res_video_dir", type=str, required=True, help="Directory to save the resulting video")
+        self.parser.add_argument("--pretrained_lipsick_path", type=str, default="./asserts/pretrained_lipsick.pth", help="Path to the pretrained LipSick model")
+        self.parser.add_argument("--deepspeech_model_path", type=str, default="./asserts/output_graph.pb", help="Path to the DeepSpeech model")
+        self.parser.add_argument("--res_video_dir", type=str, default="./asserts/inference_result", help="Directory to save the resulting video")
 
         # New argument for custom crop radius
         self.parser.add_argument("--custom_crop_radius", type=int, default=None, help="Custom crop radius for all frames")
-
+        # New argument for custom ref frames
+        self.parser.add_argument("--custom_reference_frames", type=str, default=None, help="Comma-separated list of custom reference frames")
+        self.parser.add_argument('--generate_same_length_video', action='store_true', help="Generate a video of the same length without lipsync modifications")
     def parse_args(self):
         return self.parser.parse_args()
 
