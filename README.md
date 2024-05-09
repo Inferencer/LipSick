@@ -79,7 +79,6 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [ ] Add seamless clone masking to remove the common bounding box around mouths. 🤕
 - [ ] Add alternative option for face tracking model [SFD](https://github.com/1adrianb/face-alignment) (likely best results, but slower than Dlib).
 - [ ] Add custom reference frame feature. 😷
-- [ ] Add auto persistent crop_radius to prevent mask flickering. 😷
 - [ ] Examine CPU speed upgrades.
 - [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
 - [ ] Provide HuggingFace space CPU (free usage but slower). 😷
@@ -88,15 +87,16 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [ ] Release Tutorial on manual masking using DaVinci. 😷
 - [ ] Looped original video generated as an option for faster manual masking. 😷
 - [ ] Image to MP4 conversion so a single image can be used as input.
-- [x] Automatic audio conversion to WAV regardless of input audio format. 🤮
+- [x] Automatic audio conversion to WAV regardless of input audio format. 🤢
 - [ ] Clean README.md & provide command line inference.
 - [ ] Remove input video 25fps requirement.
 - [ ] Upload cherry picked input footage for user download & use.
 - [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
-- [ ] Upload results footage montage to GitHub so new users can see what LipSick is capable of.
+- [x] Upload results footage montage to GitHub so new users can see what LipSick is capable of. 🤮
 - [ ] Close mouth fully on silence
-- [x] Auto run the UI with a .bat file 🤮
-- [x] Auto open UI in default browser 🤮
+- [x] Add auto persistent crop_radius to prevent mask flickering. 🤮
+- [x] Auto run the UI with a .bat file. 🤮
+- [x] Auto open UI in default browser. 🤮
 - [x] Add custom crop radius feature to stop flickering [Example](https://github.com/Inferencer/LipSick/issues/8#issuecomment-2099371266) 🤮
 - [x] Provide HuggingFace space GPU. 🤮
 - [x] Remove warning messages in command prompt that don't affect performance. 🤢
