@@ -131,16 +131,20 @@ if __name__ == '__main__':
     state_dict = torch.load(opt.pretrained_lipsick_path, map_location=torch.device('cpu'))['state_dict']['net_g']
     new_state_dict = OrderedDict()
     for k, v in state_dict.items():
-        name = k[7:]  # remove module.
+        name = k[7:] 
         new_state_dict[name] = v
     model.load_state_dict(new_state_dict)
     model.eval()
     res_video_path = os.path.join(opt.res_video_dir, os.path.basename(opt.source_video_path)[:-4] + '_facial_dubbing.mp4')
-    res_face_path = os.path.join(opt.res_video_dir, os.path.basename(opt.source_video_path)[:-4] + '_synthetic_face.mp4')
-    videowriter = cv2.VideoWriter(res_video_path, cv2.VideoWriter_fourcc(*'XVID'), 25, video_size)
-    videowriter_face = cv2.VideoWriter(res_face_path, cv2.VideoWriter_fourcc(*'XVID'), 25, (resize_w, resize_h))
+    videowriter = cv2.VideoWriter(res_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, video_size)
+    # Initialize same-length video writer only if the flag is set
+    if opt.generate_same_length_video:
+        videowriter_samelength = cv2.VideoWriter(res_video_path.replace('_facial_dubbing.mp4', '_samelength.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), 25, video_size)
+    res_face_path = os.path.join(opt.res_video_dir, os.path.basename(opt.source_video_path)[:-4] + '_facial_dubbing_face.mp4')
+    videowriter_face = cv2.VideoWriter(res_face_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, (resize_w, resize_h))
+
     # Print out the initialized dimensions
-    print(f"Initialized videowriter_face with: ({resize_w}, {resize_h})")
+    # print(f"Initialized videowriter_face with: ({resize_w}, {resize_h})")
     for clip_end_index in range(5, pad_length, 1):
         print(f'Synthesizing {clip_end_index - 5}/{pad_length - 5} frame')
         crop_flag, crop_radius_current = compute_crop_radius(video_size, res_video_landmark_data_pad[clip_end_index - 5:clip_end_index, :, :], random_scale=1.05)
@@ -148,6 +152,9 @@ if __name__ == '__main__':
             raise Exception('Our method can not handle videos with large change of facial size!!')
         crop_radius_1_4 = crop_radius_current // 4
         frame_data = cv2.imread(res_video_frame_path_list_pad[clip_end_index - 3])[:, :, ::-1]
+        frame_data_samelength = frame_data.copy()
+        if opt.generate_same_length_video:
+            videowriter_samelength.write(frame_data_samelength[:, :, ::-1])
         frame_landmark = res_video_landmark_data_pad[clip_end_index - 3, :, :]
         crop_frame_data = frame_data[
                           frame_landmark[29, 1] - crop_radius_current:frame_landmark[29, 1] + crop_radius_current * 2 + crop_radius_1_4,
@@ -174,15 +181,19 @@ if __name__ == '__main__':
         :] = pre_frame_resize[:crop_radius_current * 3, :, :]
         videowriter.write(frame_data[:, :, ::-1])
     videowriter.release()
+    if opt.generate_same_length_video:
+        videowriter_samelength.release()
     videowriter_face.release()
     video_add_audio_path = res_video_path.replace('_facial_dubbing.mp4', '_LIPSICK.mp4')
     video_add_audio_path = get_versioned_filename(video_add_audio_path)
     if os.path.exists(video_add_audio_path):
         os.remove(video_add_audio_path)
     cmd = f'ffmpeg -i "{res_video_path}" -i "{opt.driving_audio_path}" -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 "{video_add_audio_path}"'
-    subprocess.call(cmd, shell=True)
+    subprocess.call(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # Suppress FFmpeg logs
     os.remove(res_video_path)  # Clean up intermediate files
+
     os.remove(res_face_path)  # Clean up intermediate files
+
 
       # Helper function to ensure unique filenames
 def get_versioned_filename(filepath):
@@ -193,4 +204,3 @@ def get_versioned_filename(filepath):
         filepath = f"{base}({counter}){ext}"
         counter += 1
     return filepath
-
