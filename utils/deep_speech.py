@@ -42,12 +42,6 @@ class DeepSpeech():
     def compute_audio_feature(self, audio_path):
         audio_sample_rate, audio = wavfile.read(audio_path)
         if audio.ndim > 1:
-            # Print the ASCII art in green
-            print("\033[32m"  # Green color start
-                  "███████████████████████████████████████\n"
-                  "█▄─▄███▄─▄█▄─▄▄─█─▄▄▄▄█▄─▄█─▄▄▄─█▄─█─▄█\n"
-                  "██─██▀██─███─▄▄▄█▄▄▄▄─██─██─███▀██─▄▀██\n"
-                  "▀▄▄▄▄▄▀▄▄▄▀▄▄▄▀▀▀▄▄▄▄▄▀▄▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀\033[0m")  # Reset to default color
             print("Hang tight! We're processing your audio, which might take a little while depending on its length.")
             audio = audio[:, 0]  # Use only the first channel if multi-channel
         if audio_sample_rate != self.target_sample_rate:
