@@ -41,8 +41,8 @@ def convert_audio_to_wav(audio_path):
 
 def extract_frames_from_video(video_path, save_dir):
     videoCapture = cv2.VideoCapture(video_path)
-    frames = videoCapture.get(cv2.CAP_PROP_FRAME_COUNT)
-    for i in range(int(frames)):
+    frames = int(videoCapture.get(cv2.CAP_PROP_FRAME_COUNT))
+    for i in range(frames):
         ret, frame = videoCapture.read()
         result_path = os.path.join(save_dir, str(i).zfill(6) + '.jpg')
         cv2.imwrite(result_path, frame)
@@ -100,18 +100,18 @@ if __name__ == '__main__':
     assert ds_feature_padding.shape[0] == len(res_video_frame_path_list_pad) == res_video_landmark_data_pad.shape[0]
     pad_length = ds_feature_padding.shape[0]
 
-    if opt.custom_crop_radius and opt.custom_crop_radius > 0:
-        crop_radius = opt.custom_crop_radius
-    else:
-        _, crop_radius = compute_crop_radius(video_size, video_landmark_data[:5])
-
     print('Selecting five random reference images')
     ref_img_list = []
     resize_w = int(opt.mouth_region_size + opt.mouth_region_size // 4)
     resize_h = int((opt.mouth_region_size // 2) * 3 + opt.mouth_region_size // 8)
-    
     ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
     for ref_index in ref_index_list:
+        if opt.custom_crop_radius and opt.custom_crop_radius > 0:
+            crop_radius, crop_flag = opt.custom_crop_radius, True
+        else:
+            crop_flag, crop_radius = compute_crop_radius(video_size, res_video_landmark_data_pad[ref_index - 5:ref_index, :, :])
+
+        crop_radius_1_4 = crop_radius // 4
         ref_img = cv2.imread(res_video_frame_path_list_pad[ref_index - 3])[:, :, ::-1]
         ref_landmark = res_video_landmark_data_pad[ref_index - 3, :, :]
         ref_img_crop = ref_img[
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         ref_img_crop = cv2.resize(ref_img_crop, (resize_w, resize_h))
         ref_img_crop = ref_img_crop / 255.0
         ref_img_list.append(ref_img_crop)
-    ref_video_frame = np.concatenate(ref_img_list, 2)
+    ref_video_frame = np.concatenate(ref_img_list, axis=2)
     ref_img_tensor = torch.from_numpy(ref_video_frame).permute(2, 0, 1).unsqueeze(0).float().to('cuda')
 
     print(f'Loading pretrained model from: {opt.pretrained_lipsick_path}')
@@ -147,18 +147,20 @@ if __name__ == '__main__':
     # print(f"Initialized videowriter_face with: ({resize_w}, {resize_h})")
     for clip_end_index in range(5, pad_length, 1):
         print(f'Synthesizing {clip_end_index - 5}/{pad_length - 5} frame')
-        crop_flag, crop_radius_current = compute_crop_radius(video_size, res_video_landmark_data_pad[clip_end_index - 5:clip_end_index, :, :], random_scale=1.05)
         if not crop_flag:
-            raise Exception('Our method can not handle videos with large change of facial size!!')
-        crop_radius_1_4 = crop_radius_current // 4
+            crop_radius = compute_crop_radius(video_size, res_video_landmark_data_pad[clip_end_index - 5:clip_end_index, :, :], random_scale=1.10)
+
+            
+        #print(f"Crop radius for frame {clip_end_index - 5}: {crop_radius}")
+        crop_radius_1_4 = crop_radius // 4
         frame_data = cv2.imread(res_video_frame_path_list_pad[clip_end_index - 3])[:, :, ::-1]
         frame_data_samelength = frame_data.copy()
         if opt.generate_same_length_video:
             videowriter_samelength.write(frame_data_samelength[:, :, ::-1])
         frame_landmark = res_video_landmark_data_pad[clip_end_index - 3, :, :]
         crop_frame_data = frame_data[
-                          frame_landmark[29, 1] - crop_radius_current:frame_landmark[29, 1] + crop_radius_current * 2 + crop_radius_1_4,
-                          frame_landmark[33, 0] - crop_radius_current - crop_radius_1_4:frame_landmark[33, 0] + crop_radius_current + crop_radius_1_4,
+                          frame_landmark[29, 1] - crop_radius:frame_landmark[29, 1] + crop_radius * 2 + crop_radius_1_4,
+                          frame_landmark[33, 0] - crop_radius - crop_radius_1_4:frame_landmark[33, 0] + crop_radius + crop_radius_1_4,
                           ]
         crop_frame_h, crop_frame_w = crop_frame_data.shape[0], crop_frame_data.shape[1]
         crop_frame_data = cv2.resize(crop_frame_data, (resize_w, resize_h)) / 255.0
@@ -174,11 +176,11 @@ if __name__ == '__main__':
         videowriter_face.write(pre_frame[:, :, ::-1].copy().astype(np.uint8))
         pre_frame_resize = cv2.resize(pre_frame, (crop_frame_w, crop_frame_h))
         frame_data[
-        frame_landmark[29, 1] - crop_radius_current:
-        frame_landmark[29, 1] + crop_radius_current * 2,
-        frame_landmark[33, 0] - crop_radius_current - crop_radius_1_4:
-        frame_landmark[33, 0] + crop_radius_current + crop_radius_1_4,
-        :] = pre_frame_resize[:crop_radius_current * 3, :, :]
+        frame_landmark[29, 1] - crop_radius:
+        frame_landmark[29, 1] + crop_radius * 2,
+        frame_landmark[33, 0] - crop_radius - crop_radius_1_4:
+        frame_landmark[33, 0] + crop_radius + crop_radius_1_4,
+        :] = pre_frame_resize[:crop_radius * 3, :, :]
         videowriter.write(frame_data[:, :, ::-1])
     videowriter.release()
     if opt.generate_same_length_video:
@@ -192,7 +194,8 @@ if __name__ == '__main__':
     subprocess.call(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # Suppress FFmpeg logs
     os.remove(res_video_path)  # Clean up intermediate files
 
-    os.remove(res_face_path)  # Clean up intermediate files
+    # os.remove(res_face_path)  # Clean up intermediate files
+
 
 
       # Helper function to ensure unique filenames
