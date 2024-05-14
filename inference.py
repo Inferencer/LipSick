@@ -6,7 +6,6 @@ import torch
 import subprocess
 import random
 from collections import OrderedDict
-import tempfile
 import dlib
 import warnings
 import tensorflow as tf
@@ -24,7 +23,6 @@ face_detector = dlib.get_frontal_face_detector()
 landmark_predictor = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
 
 def get_versioned_filename(filepath):
-    """ Append a version number to the filepath if it already exists. """
     base, ext = os.path.splitext(filepath)
     counter = 1
     while os.path.exists(filepath):
@@ -58,8 +56,31 @@ def load_landmark_dlib(image_path):
     landmarks = np.array([[p.x, p.y] for p in shape.parts()])
     return landmarks
 
+def parse_reference_indices(indices_str):
+    try:
+        indices = list(map(int, indices_str.split(',')))
+        if len(indices) == 5:
+            return indices
+    except ValueError:
+        print("Error parsing reference indices.")
+    return []
+
+def parse_reference_indices(indices_str):
+    #print(f"Received string from UI: '{indices_str}'")  # Debug output of the raw input string
+    try:
+        indices = list(map(int, indices_str.split(',')))
+        if len(indices) == 5:
+            #print(f"Parsed indices: {indices}")  # Debug output of the parsed indices
+            return indices
+        else:
+            print("Error: Incorrect number of reference indices, expected 5.")
+    except ValueError as e:
+        print(f"Error parsing reference indices: {e}")
+    return []
+
 if __name__ == '__main__':
     opt = LipSickInferenceOptions().parse_args()
+    #print(f"All received options: {opt}")  # This will print all parsed options
     opt.driving_audio_path = convert_audio_to_wav(opt.driving_audio_path)
 
     if not os.path.exists(opt.source_video_path):
@@ -67,7 +88,7 @@ if __name__ == '__main__':
     if not os.path.exists(opt.deepspeech_model_path):
         raise Exception('Please download the pretrained model of deepspeech')
 
-    print(f'Extracting frames from video: {opt.source_video_path}')
+    print('Extracting frames from video')
     video_frame_dir = opt.source_video_path.replace('.mp4', '')
     if not os.path.exists(video_frame_dir):
         os.mkdir(video_frame_dir)
@@ -100,11 +121,24 @@ if __name__ == '__main__':
     assert ds_feature_padding.shape[0] == len(res_video_frame_path_list_pad) == res_video_landmark_data_pad.shape[0]
     pad_length = ds_feature_padding.shape[0]
 
-    print('Selecting five random reference images')
+    print('Selecting reference images based on input or randomly if unspecified')
     ref_img_list = []
     resize_w = int(opt.mouth_region_size + opt.mouth_region_size // 4)
     resize_h = int((opt.mouth_region_size // 2) * 3 + opt.mouth_region_size // 8)
-    ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
+    # Check if the use_custom_frames option is activated
+    if opt.use_custom_frames:
+        # If activated and custom_reference_frames is provided, use those frames
+        if opt.custom_reference_frames:
+            ref_index_list = parse_reference_indices(opt.custom_reference_frames)
+        # Otherwise, revert to random sampling
+        else:
+            ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
+    # If not activated, always revert to random sampling
+    else:
+        ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
+
+    # Print the reference frames being used
+    #print(f"Using reference frames at indices: {ref_index_list}")
     for ref_index in ref_index_list:
         if opt.custom_crop_radius and opt.custom_crop_radius > 0:
             crop_radius, crop_flag = opt.custom_crop_radius, True
@@ -124,7 +158,7 @@ if __name__ == '__main__':
     ref_video_frame = np.concatenate(ref_img_list, axis=2)
     ref_img_tensor = torch.from_numpy(ref_video_frame).permute(2, 0, 1).unsqueeze(0).float().to('cuda')
 
-    print(f'Loading pretrained model from: {opt.pretrained_lipsick_path}')
+    #print(f'Loading pretrained model from: {opt.pretrained_lipsick_path}')
     model = LipSick(opt.source_channel, opt.ref_channel, opt.audio_channel).to('cuda')
     if not os.path.exists(opt.pretrained_lipsick_path):
         raise Exception(f'Wrong path of pretrained model weight: {opt.pretrained_lipsick_path}')
@@ -143,15 +177,11 @@ if __name__ == '__main__':
     res_face_path = os.path.join(opt.res_video_dir, os.path.basename(opt.source_video_path)[:-4] + '_facial_dubbing_face.mp4')
     videowriter_face = cv2.VideoWriter(res_face_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, (resize_w, resize_h))
 
-    # Print out the initialized dimensions
-    # print(f"Initialized videowriter_face with: ({resize_w}, {resize_h})")
     for clip_end_index in range(5, pad_length, 1):
         print(f'Synthesizing {clip_end_index - 5}/{pad_length - 5} frame')
         if not crop_flag:
             crop_radius = compute_crop_radius(video_size, res_video_landmark_data_pad[clip_end_index - 5:clip_end_index, :, :], random_scale=1.10)
 
-            
-        #print(f"Crop radius for frame {clip_end_index - 5}: {crop_radius}")
         crop_radius_1_4 = crop_radius // 4
         frame_data = cv2.imread(res_video_frame_path_list_pad[clip_end_index - 3])[:, :, ::-1]
         frame_data_samelength = frame_data.copy()
@@ -193,8 +223,8 @@ if __name__ == '__main__':
     cmd = f'ffmpeg -i "{res_video_path}" -i "{opt.driving_audio_path}" -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 "{video_add_audio_path}"'
     subprocess.call(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # Suppress FFmpeg logs
     os.remove(res_video_path)  # Clean up intermediate files
+    os.remove(res_face_path)  # Clean up intermediate files
 
-    # os.remove(res_face_path)  # Clean up intermediate files
 
 
 
