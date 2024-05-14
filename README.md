@@ -78,22 +78,23 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [ ] Add upscale reference frames with masking. 
 - [ ] Add seamless clone masking to remove the common bounding box around mouths. 🤕
 - [ ] Add alternative option for face tracking model [SFD](https://github.com/1adrianb/face-alignment) (likely best results, but slower than Dlib).
-- [ ] Add custom reference frame feature. 😷
+- [ ] Add visualization for custom ref frames & print correct values
 - [ ] Examine CPU speed upgrades.
 - [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
 - [ ] Provide HuggingFace space CPU (free usage but slower). 😷
-- [x] Provide Google Colab .IPYNB. 🤮
-- [x] Add support for Linux. 🤢
 - [ ] Release Tutorial on manual masking using DaVinci. 😷
-- [x] Looped original video generated as an option for faster manual masking. 🤮
 - [ ] Image to MP4 conversion so a single image can be used as input.
-- [x] Automatic audio conversion to WAV regardless of input audio format. 🤢
+- [ ] Automatic audio conversion to WAV regardless of input audio format. 🤕
 - [ ] Clean README.md & provide command line inference.
 - [ ] Remove input video 25fps requirement.
 - [ ] Upload cherry picked input footage for user download & use.
 - [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
-- [x] Upload results footage montage to GitHub so new users can see what LipSick is capable of. 🤮
 - [ ] Close mouth fully on silence
+- [x] Provide Google Colab .IPYNB. 🤮
+- [x] Add support for Linux. 🤢
+- [x] Looped original video generated as an option for faster manual masking. 🤮
+- [x] Upload results footage montage to GitHub so new users can see what LipSick is capable of. 🤮
+- [x] Add custom reference frame feature. 🤮
 - [x] auto git pull updater .bat file 🤢
 - [x] Add auto persistent crop_radius to prevent mask flickering. 🤮
 - [x] Auto run the UI with a .bat file. 🤮
