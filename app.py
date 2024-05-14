@@ -19,7 +19,7 @@ def get_versioned_filename(filepath):
 def compute_crop_radius_stats(video_file):
     if video_file is None:
         return "Please upload a video file first."
-    print("Computing Crop Radius")
+    print("Computing Crop Radius..")
     _, _, _, most_common = calculate_crop_radius_statistics(video_file.name)
     print(f"Done: Crop radius = {most_common}")
     return most_common
