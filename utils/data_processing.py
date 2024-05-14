@@ -54,4 +54,3 @@ def compute_crop_radius(video_size, landmark_data_clip, random_scale=None):
         return False, None
     
     return True, radius_max, lowest, highest, average
-
