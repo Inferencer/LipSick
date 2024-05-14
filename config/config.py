@@ -52,7 +52,11 @@ class LipSickInferenceOptions:
         # New argument for custom crop radius
         self.parser.add_argument("--custom_crop_radius", type=int, default=None, help="Custom crop radius for all frames")
         # New argument for custom ref frames
-        self.parser.add_argument("--custom_reference_frames", type=str, default=None, help="Comma-separated list of custom reference frames")
+        self.parser.add_argument("--custom_reference_frames", type=str, default=None, help="Comma-separated list of custom reference frame indices")
         self.parser.add_argument('--generate_same_length_video', action='store_true', help="Generate a video of the same length without lipsync modifications")
+        # New argument for enabling custom reference frames
+        self.parser.add_argument("--use_custom_frames", action='store_true', help="Activate custom reference frames if set")
+        
     def parse_args(self):
         return self.parser.parse_args()
+
