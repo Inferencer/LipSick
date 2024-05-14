@@ -138,7 +138,8 @@ if __name__ == '__main__':
         ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
 
     # Print the reference frames being used
-    #print(f"Using reference frames at indices: {ref_index_list}")
+    print(f"Using reference frames at indices: {ref_index_list}")
+    print('If each value has +5 added do not be alarmed it will -5 later')
     for ref_index in ref_index_list:
         if opt.custom_crop_radius and opt.custom_crop_radius > 0:
             crop_radius, crop_flag = opt.custom_crop_radius, True
