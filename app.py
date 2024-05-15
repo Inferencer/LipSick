@@ -19,12 +19,12 @@ def get_versioned_filename(filepath):
 def compute_crop_radius_stats(video_file):
     if video_file is None:
         return "Please upload a video file first."
-    print("Computing Crop Radius..")
+    print("Computing Crop Radius...")
     _, _, _, most_common = calculate_crop_radius_statistics(video_file.name)
     print(f"Done: Crop radius = {most_common}")
     return most_common
 
-def process_files(source_video, driving_audio, custom_crop_radius=None, generate_same_length_video=False, ref_index_1=None, ref_index_2=None, ref_index_3=None, ref_index_4=None, ref_index_5=None):
+def process_files(source_video, driving_audio, custom_crop_radius=None, generate_same_length_video=False, ref_index_1=None, ref_index_2=None, ref_index_3=None, ref_index_4=None, ref_index_5=None, activate_custom_frames=False):
     # Adjust reference indices before sending them to the inference script
     ref_indices = [index for index in [ref_index_1, ref_index_2, ref_index_3, ref_index_4, ref_index_5] if index is not None]
     if custom_crop_radius is None or custom_crop_radius == 0:
@@ -60,7 +60,7 @@ def process_files(source_video, driving_audio, custom_crop_radius=None, generate
         cmd.extend(['--custom_crop_radius', str(custom_crop_radius)])
 
     if activate_custom_frames:
-        cmd.append('--use_custom_frames')
+        cmd.append('--activate_custom_frames')
 
     if generate_same_length_video:
         cmd.append('--generate_same_length_video')
@@ -82,8 +82,6 @@ def process_files(source_video, driving_audio, custom_crop_radius=None, generate
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
         return "An error occurred during processing. Please check the console log.", "", None
-
-
 
 
 with gr.Blocks(css=".input_number { width: 80px; }") as iface:
@@ -143,12 +141,11 @@ with gr.Blocks(css=".input_number { width: 80px; }") as iface:
         output_video = gr.Video(label="Processed Video", show_label=False)
         status_text = gr.Textbox(visible=False)  # Reintroduce a hidden Textbox for stability
 
-        # Process files with ref indices
+        # Process files with ref indices and checkboxes
         process_btn.click(
             fn=process_files,
-            inputs=[source_video, driving_audio, custom_crop_radius, generate_same_length_video, ref_index_1, ref_index_2, ref_index_3, ref_index_4, ref_index_5],
+            inputs=[source_video, driving_audio, custom_crop_radius, generate_same_length_video, ref_index_1, ref_index_2, ref_index_3, ref_index_4, ref_index_5, activate_custom_frames],
             outputs=[status_text, output_video]
         )
 
     iface.launch(inbrowser=True)
-
