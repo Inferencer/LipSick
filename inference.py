@@ -12,7 +12,7 @@ import tensorflow as tf
 
 warnings.filterwarnings("ignore", category=UserWarning, message="Default grid_sample and affine_grid behavior has changed*")
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
-os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+#os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 from utils.deep_speech import DeepSpeech
 from utils.data_processing import compute_crop_radius
@@ -125,8 +125,8 @@ if __name__ == '__main__':
     ref_img_list = []
     resize_w = int(opt.mouth_region_size + opt.mouth_region_size // 4)
     resize_h = int((opt.mouth_region_size // 2) * 3 + opt.mouth_region_size // 8)
-    # Check if the use_custom_frames option is activated
-    if opt.use_custom_frames:
+    # Check if the activate_custom_frames option is activated
+    if opt.activate_custom_frames:
         # If activated and custom_reference_frames is provided, use those frames
         if opt.custom_reference_frames:
             ref_index_list = parse_reference_indices(opt.custom_reference_frames)
