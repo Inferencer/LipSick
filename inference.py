@@ -7,17 +7,17 @@ import subprocess
 import random
 from collections import OrderedDict
 import dlib
+import shutil
 import warnings
 import tensorflow as tf
 
 warnings.filterwarnings("ignore", category=UserWarning, message="Default grid_sample and affine_grid behavior has changed*")
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
-#os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 from utils.deep_speech import DeepSpeech
 from utils.data_processing import compute_crop_radius
 from config.config import LipSickInferenceOptions
-from models.LipSick import LipSick
+from models.LipSick import LipSick  # Import the LipSick model
 
 face_detector = dlib.get_frontal_face_detector()
 landmark_predictor = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
@@ -38,13 +38,15 @@ def convert_audio_to_wav(audio_path):
     return output_path
 
 def extract_frames_from_video(video_path, save_dir):
-    videoCapture = cv2.VideoCapture(video_path)
-    frames = int(videoCapture.get(cv2.CAP_PROP_FRAME_COUNT))
+    video_capture = cv2.VideoCapture(video_path)
+    frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
     for i in range(frames):
-        ret, frame = videoCapture.read()
+        ret, frame = video_capture.read()
+        if not ret:
+            break
         result_path = os.path.join(save_dir, str(i).zfill(6) + '.jpg')
         cv2.imwrite(result_path, frame)
-    return (int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH)), int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    return (int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)), int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
 def load_landmark_dlib(image_path):
     img = cv2.imread(image_path)
@@ -65,29 +67,18 @@ def parse_reference_indices(indices_str):
         print("Error parsing reference indices.")
     return []
 
-def parse_reference_indices(indices_str):
-    #print(f"Received string from UI: '{indices_str}'")  # Debug output of the raw input string
-    try:
-        indices = list(map(int, indices_str.split(',')))
-        if len(indices) == 5:
-            #print(f"Parsed indices: {indices}")  # Debug output of the parsed indices
-            return indices
-        else:
-            print("Error: Incorrect number of reference indices, expected 5.")
-    except ValueError as e:
-        print(f"Error parsing reference indices: {e}")
-    return []
-
 if __name__ == '__main__':
     opt = LipSickInferenceOptions().parse_args()
-    #print(f"All received options: {opt}")  # This will print all parsed options
     opt.driving_audio_path = convert_audio_to_wav(opt.driving_audio_path)
+
+    # Ensure the res_video_dir is defined before using it
+    res_video_dir = opt.res_video_dir
 
     if not os.path.exists(opt.source_video_path):
         raise Exception(f'Wrong video path: {opt.source_video_path}')
     if not os.path.exists(opt.deepspeech_model_path):
         raise Exception('Please download the pretrained model of deepspeech')
-
+    
     print('Extracting frames from video')
     video_frame_dir = opt.source_video_path.replace('.mp4', '')
     if not os.path.exists(video_frame_dir):
@@ -125,19 +116,14 @@ if __name__ == '__main__':
     ref_img_list = []
     resize_w = int(opt.mouth_region_size + opt.mouth_region_size // 4)
     resize_h = int((opt.mouth_region_size // 2) * 3 + opt.mouth_region_size // 8)
-    # Check if the activate_custom_frames option is activated
     if opt.activate_custom_frames:
-        # If activated and custom_reference_frames is provided, use those frames
         if opt.custom_reference_frames:
             ref_index_list = parse_reference_indices(opt.custom_reference_frames)
-        # Otherwise, revert to random sampling
         else:
             ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
-    # If not activated, always revert to random sampling
     else:
         ref_index_list = random.sample(range(5, len(res_video_frame_path_list_pad) - 2), 5)
 
-    # Print the reference frames being used
     print(f"Using reference frames at indices: {ref_index_list}")
     print('If each value has +5 added do not be alarmed it will -5 later')
     for ref_index in ref_index_list:
@@ -159,7 +145,6 @@ if __name__ == '__main__':
     ref_video_frame = np.concatenate(ref_img_list, axis=2)
     ref_img_tensor = torch.from_numpy(ref_video_frame).permute(2, 0, 1).unsqueeze(0).float().to('cuda')
 
-    #print(f'Loading pretrained model from: {opt.pretrained_lipsick_path}')
     model = LipSick(opt.source_channel, opt.ref_channel, opt.audio_channel).to('cuda')
     if not os.path.exists(opt.pretrained_lipsick_path):
         raise Exception(f'Wrong path of pretrained model weight: {opt.pretrained_lipsick_path}')
@@ -170,12 +155,23 @@ if __name__ == '__main__':
         new_state_dict[name] = v
     model.load_state_dict(new_state_dict)
     model.eval()
-    res_video_path = os.path.join(opt.res_video_dir, os.path.basename(opt.source_video_path)[:-4] + '_facial_dubbing.mp4')
+
+    res_video_name = os.path.basename(opt.source_video_path)[:-4] + '_facial_dubbing.mp4'
+    res_video_path = os.path.join(opt.res_video_dir, res_video_name)
+    res_video_path = get_versioned_filename(res_video_path)  # Ensure unique filename
+
     videowriter = cv2.VideoWriter(res_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, video_size)
-    # Initialize same-length video writer only if the flag is set
-    if opt.generate_same_length_video:
-        videowriter_samelength = cv2.VideoWriter(res_video_path.replace('_facial_dubbing.mp4', '_samelength.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), 25, video_size)
-    res_face_path = os.path.join(opt.res_video_dir, os.path.basename(opt.source_video_path)[:-4] + '_facial_dubbing_face.mp4')
+
+    if opt.auto_mask:
+        samelength_video_name = 'samelength.mp4'
+        samelength_video_path = os.path.join(opt.res_video_dir, samelength_video_name)
+        samelength_video_path = get_versioned_filename(samelength_video_path)  # Ensure unique filename
+        videowriter_samelength = cv2.VideoWriter(samelength_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, video_size)
+
+    res_face_name = os.path.basename(opt.source_video_path)[:-4] + '_facial_dubbing_face.mp4'
+    res_face_path = os.path.join(opt.res_video_dir, res_face_name)
+    res_face_path = get_versioned_filename(res_face_path)  # Ensure unique filename
+
     videowriter_face = cv2.VideoWriter(res_face_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, (resize_w, resize_h))
 
     for clip_end_index in range(5, pad_length, 1):
@@ -186,7 +182,7 @@ if __name__ == '__main__':
         crop_radius_1_4 = crop_radius // 4
         frame_data = cv2.imread(res_video_frame_path_list_pad[clip_end_index - 3])[:, :, ::-1]
         frame_data_samelength = frame_data.copy()
-        if opt.generate_same_length_video:
+        if opt.auto_mask:
             videowriter_samelength.write(frame_data_samelength[:, :, ::-1])
         frame_landmark = res_video_landmark_data_pad[clip_end_index - 3, :, :]
         crop_frame_data = frame_data[
@@ -214,27 +210,31 @@ if __name__ == '__main__':
         :] = pre_frame_resize[:crop_radius * 3, :, :]
         videowriter.write(frame_data[:, :, ::-1])
     videowriter.release()
-    if opt.generate_same_length_video:
+    if opt.auto_mask:
         videowriter_samelength.release()
     videowriter_face.release()
-    video_add_audio_path = res_video_path.replace('_facial_dubbing.mp4', '_LIPSICK.mp4')
-    video_add_audio_path = get_versioned_filename(video_add_audio_path)
-    if os.path.exists(video_add_audio_path):
-        os.remove(video_add_audio_path)
-    cmd = f'ffmpeg -i "{res_video_path}" -i "{opt.driving_audio_path}" -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 "{video_add_audio_path}"'
+
+    if opt.auto_mask:
+        video_add_audio_path = os.path.join(opt.res_video_dir, 'pre_blend.mp4')
+    else:
+        video_add_audio_path = os.path.join(opt.res_video_dir, os.path.basename(opt.source_video_path)[:-4] + '_LIPSICK.mp4')
+
+    video_add_audio_path = get_versioned_filename(video_add_audio_path)  # Ensure unique filename
+
+    cmd = f'ffmpeg -r 25 -i "{res_video_path}" -i "{opt.driving_audio_path}" -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 "{video_add_audio_path}"'
     subprocess.call(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  # Suppress FFmpeg logs
     os.remove(res_video_path)  # Clean up intermediate files
     os.remove(res_face_path)  # Clean up intermediate files
 
+    if opt.auto_mask:
+        print('Auto Mask stage')
+        samelength_video_path = os.path.join(opt.res_video_dir, 'samelength.mp4')
+        pre_blend_video_path = os.path.join(opt.res_video_dir, 'pre_blend.mp4')
 
-
-
-      # Helper function to ensure unique filenames
-def get_versioned_filename(filepath):
-    """ Append a version number to the filepath if it already exists. """
-    base, ext = os.path.splitext(filepath)
-    counter = 1
-    while os.path.exists(filepath):
-        filepath = f"{base}({counter}){ext}"
-        counter += 1
-    return filepath
+        # Call blend.py for blending and masking
+        cmd = [
+            'python', 'utils/blend.py',
+            '--samelength_video_path', samelength_video_path,
+            '--pre_blend_video_path', pre_blend_video_path
+        ]
+        subprocess.call(cmd, shell=True)
