@@ -1,6 +1,6 @@
 import argparse
 
-class DataProcessingOptions():
+class DataProcessingOptions:
     def __init__(self):
         self.parser = argparse.ArgumentParser()
 
@@ -12,27 +12,23 @@ class DataProcessingOptions():
         self.parser.add_argument('--generate_training_json', action='store_true', help='generate training json file')
 
         self.parser.add_argument('--source_video_dir', type=str, default="./asserts/training_data/split_video_25fps",
-                            help='path of source video in 25 fps')
+                                 help='path of source video in 25 fps')
         self.parser.add_argument('--openface_landmark_dir', type=str, default="./asserts/training_data/split_video_25fps_landmark_openface",
-                            help='path of openface landmark dir')
+                                 help='path of openface landmark dir')
         self.parser.add_argument('--video_frame_dir', type=str, default="./asserts/training_data/split_video_25fps_frame",
                                  help='path of video frames')
         self.parser.add_argument('--audio_dir', type=str, default="./asserts/training_data/split_video_25fps_audio",
-                            help='path of audios')
+                                 help='path of audios')
         self.parser.add_argument('--deep_speech_dir', type=str, default="./asserts/training_data/split_video_25fps_deepspeech",
                                  help='path of deep speech')
         self.parser.add_argument('--crop_face_dir', type=str, default="./asserts/training_data/split_video_25fps_crop_face",
-                            help='path of crop face dir')
+                                 help='path of crop face dir')
         self.parser.add_argument('--json_path', type=str, default="./asserts/training_data/training_json.json",
                                  help='path of training json')
         self.parser.add_argument('--clip_length', type=int, default=9, help='clip length')
         self.parser.add_argument('--deep_speech_model', type=str, default="./asserts/output_graph.pb",
                                  help='path of pretrained deepspeech model')
         return self.parser.parse_args()
-
-
-
-import argparse
 
 class LipSickInferenceOptions:
     def __init__(self):
@@ -49,15 +45,16 @@ class LipSickInferenceOptions:
         self.parser.add_argument("--deepspeech_model_path", type=str, default="./asserts/output_graph.pb", help="Path to the DeepSpeech model")
         self.parser.add_argument("--res_video_dir", type=str, default="./asserts/inference_result", help="Directory to save the resulting video")
 
-        # New argument for custom crop radius
         self.parser.add_argument("--custom_crop_radius", type=int, default=None, help="Custom crop radius for all frames")
-        # New argument for custom ref frames
         self.parser.add_argument("--custom_reference_frames", type=str, default=None, help="Comma-separated list of custom reference frame indices")
-        self.parser.add_argument('--generate_same_length_video', action='store_true', help="Generate a video of the same length without lipsync modifications")
-        # New argument for enabling custom reference frames
         self.parser.add_argument("--activate_custom_frames", action='store_true', help="Activate custom reference frames if set")
 
+        self.parser.add_argument("--samelength_video_path", type=str, default="./asserts/inference_result/samelength.mp4", help="Path to the samelength video")
+        self.parser.add_argument("--auto_mask", action='store_true', help="Generate a same-length video for auto masking")
+        self.parser.add_argument("--pre_blend_video_path", type=str, default="./asserts/inference_result/pre_blend.mp4", help="Path to the pre-blend or lipsick video")
         
+        # Set lipsick_video_path to the default value
+        self.parser.add_argument('--lipsick_video_path', type=str, default="./asserts/inference_result/_lipsick.mp4", help="Path to the pre-blended or lipsick video")
+
     def parse_args(self):
         return self.parser.parse_args()
-
