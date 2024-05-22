@@ -88,6 +88,9 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [ ] Remove input video 25fps requirement.
 - [ ] Upload cherry picked input footage for user download & use.
 - [ ] Create a Discord to share results, faster help, suggestions & cherry picked input footage.
+- [ ] Multi face Lipsync on large scene scene changes/ cut scenes
+- [ ] Mutli face Lipsync support on 1+ person in video.
+- [ ] skipable frames when no face it detected.
 - [ ] Close mouth fully on silence
 - [x] Add auto masking to remove the common bounding box around mouths. 🤢
 - [x] Provide Google Colab .IPYNB. 🤮
