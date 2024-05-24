@@ -1,3 +1,4 @@
+import sys
 import argparse
 import numpy as np
 import os
@@ -6,7 +7,6 @@ import glob
 import dlib
 import subprocess
 import shutil
-import sys
 
 # Add the parent directory to the Python path explicitly
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -89,8 +89,10 @@ def blend_videos(same_length_dir, pre_blend_dir, samelength_path, pre_blend_path
                   int(cv2.VideoCapture(samelength_path).get(cv2.CAP_PROP_FRAME_HEIGHT)))
     videowriter = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, video_size)
 
-    total_frames = len(same_length_frame_path_list)
     for i, (same_length_frame_path, pre_blend_frame_path, landmark_data) in enumerate(zip(same_length_frame_path_list, pre_blend_frame_path_list, pre_blend_landmark_data)):
+        sys.stdout.write(f'\rAlpha blending frame {i+1}/{len(same_length_frame_path_list)}')
+        sys.stdout.flush()  # Make sure to flush the output buffer
+
         same_length_frame = cv2.imread(same_length_frame_path)
         pre_blend_frame = cv2.imread(pre_blend_frame_path)
 
@@ -101,11 +103,6 @@ def blend_videos(same_length_dir, pre_blend_dir, samelength_path, pre_blend_path
             blended_frame = same_length_frame  # Use original frame if blending fails
 
         videowriter.write(blended_frame)
-
-        # Print progress
-        progress = (i + 1) / total_frames * 100
-        sys.stdout.write(f"\rAlpha blending frame {i+1}/{total_frames} - {progress:.2f}% completed")
-        sys.stdout.flush()
 
     videowriter.release()
 
@@ -124,8 +121,6 @@ def blend_videos(same_length_dir, pre_blend_dir, samelength_path, pre_blend_path
     os.remove(pre_blend_path)
     shutil.rmtree(same_length_dir)
     shutil.rmtree(pre_blend_dir)
-
-    print("\nBlending complete.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Alpha blend two videos based on facial landmarks')
