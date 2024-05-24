@@ -1,5 +1,6 @@
 import numpy as np
 import glob
+import sys
 import os
 import cv2
 import torch
@@ -175,7 +176,8 @@ if __name__ == '__main__':
     videowriter_face = cv2.VideoWriter(res_face_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, (resize_w, resize_h))
 
     for clip_end_index in range(5, pad_length, 1):
-        print(f'Synthesizing {clip_end_index - 5}/{pad_length - 5} frame')
+        sys.stdout.write(f'\rSynthesizing {clip_end_index - 5}/{pad_length - 5} frame')
+        sys.stdout.flush()  # Make sure to flush the output buffer
         if not crop_flag:
             crop_radius = compute_crop_radius(video_size, res_video_landmark_data_pad[clip_end_index - 5:clip_end_index, :, :], random_scale=1.10)
 
