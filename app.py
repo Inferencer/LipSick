@@ -3,6 +3,8 @@ import gradio as gr
 import os
 import warnings
 from compute_crop_radius import calculate_crop_radius_statistics
+from utils.reference_frame import extract_and_crop_frame, delete_existing_reference_frames, overlay_text
+import cv2
 
 # Suppress specific warnings about video conversion
 warnings.filterwarnings("ignore", message="Video does not have browser-compatible container or codec. Converting to mp4")
@@ -75,6 +77,19 @@ def process_files(source_video, driving_audio, custom_crop_radius=None, auto_mas
         print(f"An error occurred: {e}")
         return "An error occurred during processing. Please check the console log.", ""
 
+def visualize_reference_frames(video_path, ref_index_1, ref_index_2, ref_index_3, ref_index_4, ref_index_5):
+    delete_existing_reference_frames()  # Delete existing reference frames before visualization
+    ref_indices = [ref_index_1, ref_index_2, ref_index_3, ref_index_4, ref_index_5]
+    frames = []
+    for index in ref_indices:
+        if index is not None:
+            frame_path = extract_and_crop_frame(video_path, int(index), crop_to_face=False)  # Don't crop to face
+            frame = cv2.imread(frame_path)
+            frame_with_text = overlay_text(frame, int(index), face_detected=True)  # Assume face detected
+            cv2.imwrite(frame_path, frame_with_text)  # Save the frame with text overlay
+            frames.append(frame_path)
+    return frames
+
 with gr.Blocks(css=".input_number { width: 80px; }") as iface:
     gr.Markdown("### 🤢 LIPSICK 🤮\nUpload your video and driving audio to Lipsync.")
 
@@ -112,6 +127,15 @@ with gr.Blocks(css=".input_number { width: 80px; }") as iface:
                 ref_index_3 = gr.Number(label="Frame")
                 ref_index_4 = gr.Number(label="Frame")
                 ref_index_5 = gr.Number(label="Frame")
+
+            visualize_btn = gr.Button("Visualize Reference Frames")
+            reference_images = gr.Gallery(label="Reference Frames", elem_id="reference_frames")
+
+            visualize_btn.click(
+                fn=visualize_reference_frames,
+                inputs=[source_video, ref_index_1, ref_index_2, ref_index_3, ref_index_4, ref_index_5],
+                outputs=[reference_images]
+            )
 
             gr.Markdown("___")
             compute_crop_btn = gr.Button("Compute Crop Radius Stats")
