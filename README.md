@@ -77,7 +77,6 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [ ] Add support MacOS.
 - [ ] Add upscale reference frames with masking. 
 - [ ] Add alternative option for face tracking model [SFD](https://github.com/1adrianb/face-alignment) (likely best results, but slower than Dlib).
-- [ ] Add visualization for custom ref frames & print correct values
 - [ ] Examine CPU speed upgrades.
 - [ ] Reintroduce persistent folders for frame extraction as an option with existing frame checks for faster extraction on commonly used videos. 😷
 - [ ] Provide HuggingFace space CPU (free usage but slower). 😷
@@ -92,6 +91,7 @@ This will launch a Gradio interface where you can upload your video and audio fi
 - [ ] Mutli face Lipsync support on 1+ person in video.
 - [ ] skipable frames when no face it detected.
 - [ ] Close mouth fully on silence
+- [x] Add visualization for custom ref frames & print correct values 🤮
 - [x] Add auto masking to remove the common bounding box around mouths. 🤢
 - [x] Provide Google Colab .IPYNB. 🤮
 - [x] Add support for Linux. 🤢
