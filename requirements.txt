@@ -3,9 +3,6 @@ python_speech_features
 filetype==1.2.0
 numpy
 opencv-python
-torch==2.2.1
-torchvision==0.17.1
-torchaudio==2.2.1
 gradio==4.26.0
 psutil
 tqdm
