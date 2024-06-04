@@ -6,7 +6,7 @@ opencv-python
 gradio==4.26.0
 psutil
 tqdm
-tensorflow==2.12
+tensorflow-gpu==2.12
 scipy
 protobuf
 cmake
