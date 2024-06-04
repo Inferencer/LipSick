@@ -1,5 +1,6 @@
 <div align="center">
     <h1>🤢 LipSick Collab please click "Connect" then choose T4 as your hardware by clicking selecting "Change Runtime Type" so you are connected to the GPU🤮</h1> 
+<h1>🤢Warning I am currently working on the correct tensorflow versions for linux so this collab may fail to run correctly🤮</h1> 
     <h1><a href="https://colab.research.google.com/drive/172-G93PTzioP67DoltOliMOn5vnBSeRW?usp=sharing">Google Collab Link</a></h1>
 </div>
 
