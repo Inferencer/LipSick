@@ -22,6 +22,7 @@ dependencies:
     - gradio==4.26.0
     - psutil
     - tqdm
+    - pydub
     - tensorflow==2.10.0
     - tensorflow-gpu==2.10.0
     - tensorflow-intel==2.10.0

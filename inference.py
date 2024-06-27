@@ -19,6 +19,7 @@ from utils.deep_speech import DeepSpeech
 from utils.data_processing import compute_crop_radius
 from config.config import LipSickInferenceOptions
 from models.LipSick import LipSick  # Import the LipSick model
+from utils.inference_utils import boost_audio, detect_silence_pydub 
 
 face_detector = dlib.get_frontal_face_detector()
 landmark_predictor = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
@@ -71,7 +72,9 @@ def parse_reference_indices(indices_str):
 if __name__ == '__main__':
     opt = LipSickInferenceOptions().parse_args()
     opt.driving_audio_path = convert_audio_to_wav(opt.driving_audio_path)
-
+    boosted_audio_for_silence = boost_audio(opt.driving_audio_path)    ##Boosting audio volume for better silence detection
+    absolute_silences = detect_silence_pydub(boosted_audio_for_silence) ##Detecting silence in speech using pyDub
+    fps = 25   ##Assuming fps of video is 25 for timestamp by frame calculation
     # Ensure the res_video_dir is defined before using it
     res_video_dir = opt.res_video_dir
 
@@ -181,6 +184,14 @@ if __name__ == '__main__':
         if not crop_flag:
             crop_radius = compute_crop_radius(video_size, res_video_landmark_data_pad[clip_end_index - 5:clip_end_index, :, :], random_scale=1.10)
 
+        is_silence = False 
+        timestampEnd =(clip_end_index+1)/fps  ##Timestamp if individual frame
+        
+        for segment in absolute_silences:
+            if segment['start'] < timestampEnd < segment['end']:
+                is_silence = True  ##Silence flag if the frame is silent
+                break
+
         crop_radius_1_4 = crop_radius // 4
         frame_data = cv2.imread(res_video_frame_path_list_pad[clip_end_index - 3])[:, :, ::-1]
         frame_data_samelength = frame_data.copy()
@@ -198,9 +209,10 @@ if __name__ == '__main__':
 
         crop_frame_tensor = torch.from_numpy(crop_frame_data).float().to('cuda').permute(2, 0, 1).unsqueeze(0)
         deepspeech_tensor = torch.from_numpy(ds_feature_padding[clip_end_index - 5:clip_end_index, :]).permute(1, 0).unsqueeze(0).float().to('cuda')
+        silent_speech_tensor = torch.from_numpy(np.zeros_like(ds_feature_padding[clip_end_index - 5: clip_end_index, :])).permute(1, 0).unsqueeze(0).float().to('cuda')  ## slient speech tensor for slosed mouth
 
         with torch.no_grad():
-            pre_frame = model(crop_frame_tensor, ref_img_tensor, deepspeech_tensor)
+            pre_frame = model(crop_frame_tensor, ref_img_tensor, silent_speech_tensor) if is_silence else model(crop_frame_tensor, ref_img_tensor, deepspeech_tensor)
             pre_frame = pre_frame.squeeze(0).permute(1, 2, 0).detach().cpu().numpy() * 255
         videowriter_face.write(pre_frame[:, :, ::-1].copy().astype(np.uint8))
         pre_frame_resize = cv2.resize(pre_frame, (crop_frame_w, crop_frame_h))
