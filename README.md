@@ -68,7 +68,15 @@ Or use the new autorun tool by double clicking run_lipsick.bat
 
 This will launch a Gradio interface where you can upload your video and audio files to process them with LipSick.
 
-
+You can also run the following command: 
+```bash
+python inference.py --source_video_path /home/ubuntu/Downloads/black_stussy.mp4 
+--driving_audio_path /home/ubuntu/Downloads/stussy_text.wav 
+--pretrained_lipsick_path /home/ubuntu/code/LipSick/asserts/pretrained_lipsick.pth 
+--deepspeech_model_path /home/ubuntu/code/LipSick/asserts/output_graph.pb 
+--res_video_dir /home/ubuntu/code/LipSick/asserts/inference_result/ 
+--custom_reference_frames ref_indices_str
+```
 
 
 
